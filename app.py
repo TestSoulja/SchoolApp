@@ -19,8 +19,8 @@ uploaded_file = st.file_uploader("Choose a file", type = 'xlsx')
 sheet = st.text_input("Enter your name", "")
 
 if uploaded_file is not None:
-    df1 = pd.read_excel(uploaded_file, sheet_name=sheet, decimal =',')
-    print(df1.head())
+    df = pd.read_excel(uploaded_file, sheet_name=sheet)
+    print(df.head())
     
 def main():
     @st.cache(suppress_st_warning=True)

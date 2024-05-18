@@ -114,7 +114,8 @@ def fio(row):
 def end():
     df.to_excel(c+'new.xlsx')
     
-    st.download_button(label='📥 Download Current Result', file_name= 'new.xlsx')
+    with open("new.xlsx", "rb") as file:
+        st.download_button(label='📥 Download Current Result', data = file, file_name= 'new.xlsx')
 
     
     end_time = time.time()

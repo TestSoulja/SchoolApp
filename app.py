@@ -15,14 +15,124 @@ from ipymarkup import show_span_ascii_markup as show_markup
 s = os.path.abspath(__file__)
 c = s.replace(os.path.basename(os.path.abspath(__file__)), '')
 
+start_time = time.time()
+counternames = 0
+countersurnames = 0
+navec = Navec.load(c+'Lib/navec_news_v1_1B_250K_300d_100q.tar')
+ner = NER.load(c+'Lib/slovnet_ner_news_v1.tar')
+
 uploaded_file = st.file_uploader("Choose a file", type = 'xlsx')
 sheet = st.text_input("Enter your name", "")
+
+def date(row):
+    i = re.findall(r'\d\d/\d\d/\d\d', str(row["Операции по счету: Назначение платежа"])) or re.findall(r'\d\d,\d\d,\d\d', str(row["Операции по счету: Назначение платежа"])) or re.findall(r'\d\d/\d\d/\d\d\d\d', str(row["Операции по счету: Назначение платежа"])) or re.findall(r'\d\d.\d\d.\d\d\d\d', str(row["Операции по счету: Назначение платежа"]))
+    if i != []:
+        return i
+    else:
+        return ""
+
+def learn(row):
+    a = re.findall("обучения", str(row["Операции по счету: Назначение платежа"]), flags=re.IGNORECASE) or re.findall("обучение", str(row["Операции по счету: Назначение платежа"]), flags=re.IGNORECASE) or re.findall("образовательных", str(row["Операции по счету: Назначение платежа"]), flags=re.IGNORECASE)
+    if a != []:
+        return "Оплата обучения"
+    
+def name(row):
+    global counternames
+    en = []
+    with open(c+"first.txt","r", encoding="utf-8") as names:
+        lines = names.readlines()
+        for nameq in lines:
+            namez = nameq.replace("\n", "")
+            v = re.sub(r'_', ' ', str(row["Операции по счету: Назначение платежа"]))
+            v1 = re.sub(r';', ' ', v)
+            v2 = re.sub(r'\b', ' ', v1)
+            v3 = re.findall(r'\w+', v2, flags=re.IGNORECASE)
+
+            for i in v3:
+                if i.lower() == namez.lower():
+                    en.append(i)
+
+    #         print(Fore.YELLOW + f'\r[+] Проверка имен: {round(counternames*100/len(df), 2)}/{100}', end='')
+
+    # counternames += 1
+    if en != []:
+        return en
+    
+                
+def sur(row):
+    global countersurnames
+    en = []
+    with open(c+"sec.txt","r", encoding="utf-8") as surname:
+        lines = surname.readlines()
+        for surnameq in lines:
+            surz = surnameq.replace("\n", "")
+            v = re.sub(r'_', ' ', str(row["Операции по счету: Назначение платежа"]))
+            v1 = re.sub(r';', ' ', v)
+            v2 = re.sub(r'\b', ' ', v1)
+            v3 = re.findall(r'\w+', v2, flags=re.IGNORECASE)
+            for i in v3:
+                if i.lower() == surz.lower():
+                    en.append(i)
+
+    #         print(Fore.YELLOW + f'\r[+] Проверка фамилий: {round(countersurnames*100/len(df), 2)}/{100}', end='')
+    # countersurnames += 1
+    if en != []:
+        return en
+
+def mid(row):
+    en = []
+    with open(c+"mid.txt","r", encoding="utf-8") as mid:
+        lines = mid.readlines()
+        for mids in lines:
+            midz = mids.replace("\n", "")
+            v = re.sub(r'_', ' ', str(row["Операции по счету: Назначение платежа"]))
+            v1 = re.sub(r';', ' ', v)
+            v2 = re.sub(r'\b', ' ', v1)
+            v3 = re.findall(r'\w+', v2, flags=re.IGNORECASE)
+            for i in v3:
+                if i.lower() == midz.lower():
+                    en.append(i)
+
+    if en != []:
+        return en
+
+def fio(row):
+    global counters
+    en = []
+    text = str(row["Операции по счету: Назначение платежа"])
+    ner.navec(navec)
+    markup = ner(text)
+    if markup.spans != []:
+        for i in markup.spans:
+            if i.type == "PER":
+                # print(i)
+                f = row["Операции по счету: Назначение платежа"][i.start:i.stop]
+                # print(f)
+                return f
+
+def end():
+    df.to_excel(c+'new.xlsx')
+    
+    st.download_button(label='📥 Download Current Result', file_name= 'new.xlsx')
+
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print("\n"+'Elapsed time: ', elapsed_time)
 
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file, sheet_name=sheet)
     st.write(df.head())
-    
+
 def main():
+    df['Дата'] = df.apply(date, axis=1)
+    df['Обучение'] = df.apply(learn, axis=1)
+    # df['Имя'] = df.apply(name, axis=1)
+    # df['Фамилия'] = df.apply(sur, axis=1)
+    # df['Отчество'] = df.apply(mid, axis=1)
+    df['ФИО'] = df.apply(fio, axis=1)
+    end()
+    
     @st.cache(suppress_st_warning=True)
     
     def get_fvalue(val):

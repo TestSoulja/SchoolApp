@@ -2,6 +2,15 @@ import streamlit as st
 import pandas as pd
 from datetime import date, timedelta
 import os
+import os
+import re
+import pandas as pd
+from colorama import Fore
+import time
+from numba import njit
+from navec import Navec
+from slovnet import NER
+from ipymarkup import show_span_ascii_markup as show_markup
 
 s = os.path.abspath(__file__)
 c = s.replace(os.path.basename(os.path.abspath(__file__)), '')

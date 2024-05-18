@@ -5,3 +5,8 @@ datetime
 timedelta
 streamlit_analytics
 yadisk
+navec
+slovnet
+ipymarkup
+numba
+colorama

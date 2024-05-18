@@ -10,3 +10,4 @@ slovnet
 ipymarkup
 numba
 colorama
+openpyxl

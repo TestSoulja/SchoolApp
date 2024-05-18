@@ -2,18 +2,15 @@ import streamlit as st
 import pandas as pd
 from datetime import date, timedelta
 import os
-import json
-import streamlit_analytics
 
 s = os.path.abspath(__file__)
 c = s.replace(os.path.basename(os.path.abspath(__file__)), '')
 
-uploaded_file = st.file_uploader()
+uploaded_file = st.file_uploader("Choose a file", type = 'xlsx')
 if uploaded_file is not None:
-    #read csv
-    df1=pd.read_csv(uploaded_file)
-
-
+    df1 = pd.read_excel(uploaded_file, sheet_name='Ergebnisse', decimal =',')
+    print(df1.head())
+    
 def main():
     @st.cache(suppress_st_warning=True)
     

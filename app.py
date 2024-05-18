@@ -20,7 +20,7 @@ sheet = st.text_input("Enter your name", "")
 
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file, sheet_name=sheet)
-    print(df.head())
+    st.write(df.head())
     
 def main():
     @st.cache(suppress_st_warning=True)

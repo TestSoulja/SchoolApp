@@ -21,8 +21,9 @@ countersurnames = 0
 navec = Navec.load(c+'Lib/navec_news_v1_1B_250K_300d_100q.tar')
 ner = NER.load(c+'Lib/slovnet_ner_news_v1.tar')
 
+sheet = st.text_input("Enter sheet name and press 'Enter'", "")
 uploaded_file = st.file_uploader("Choose a file", type = 'xlsx')
-sheet = st.text_input("Enter your name", "")
+
 
 
 def date(row):

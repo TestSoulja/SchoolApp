@@ -24,6 +24,7 @@ ner = NER.load(c+'Lib/slovnet_ner_news_v1.tar')
 uploaded_file = st.file_uploader("Choose a file", type = 'xlsx')
 sheet = st.text_input("Enter your name", "")
 
+
 def date(row):
     i = re.findall(r'\d\d/\d\d/\d\d', str(row["Операции по счету: Назначение платежа"])) or re.findall(r'\d\d,\d\d,\d\d', str(row["Операции по счету: Назначение платежа"])) or re.findall(r'\d\d/\d\d/\d\d\d\d', str(row["Операции по счету: Назначение платежа"])) or re.findall(r'\d\d.\d\d.\d\d\d\d', str(row["Операции по счету: Назначение платежа"]))
     if i != []:
@@ -122,9 +123,7 @@ def end():
 
 if uploaded_file is not None:
     df = pd.read_excel(uploaded_file, sheet_name=sheet)
-    st.write(df.head())
-
-def main():
+    
     df['Дата'] = df.apply(date, axis=1)
     df['Обучение'] = df.apply(learn, axis=1)
     # df['Имя'] = df.apply(name, axis=1)
@@ -132,6 +131,8 @@ def main():
     # df['Отчество'] = df.apply(mid, axis=1)
     df['ФИО'] = df.apply(fio, axis=1)
     end()
+
+def main():
     
     @st.cache(suppress_st_warning=True)
     

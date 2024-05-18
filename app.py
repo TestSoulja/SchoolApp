@@ -16,8 +16,10 @@ s = os.path.abspath(__file__)
 c = s.replace(os.path.basename(os.path.abspath(__file__)), '')
 
 uploaded_file = st.file_uploader("Choose a file", type = 'xlsx')
+sheet = st.text_input("Enter your name", "")
+
 if uploaded_file is not None:
-    df1 = pd.read_excel(uploaded_file, sheet_name='Ergebnisse', decimal =',')
+    df1 = pd.read_excel(uploaded_file, sheet_name=sheet, decimal =',')
     print(df1.head())
     
 def main():

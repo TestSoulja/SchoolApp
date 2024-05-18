@@ -29,6 +29,7 @@ with st.form("Просим пройти небольшой опрос"):
     
     # st.write(" ")
     
+    
     st.write("Что по напиткам?")
     
     checkbox_val = st.checkbox('Пиво')
